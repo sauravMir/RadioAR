@@ -76,6 +76,7 @@
                         android:layout_height="wrap_content"
                         android:text="Start Record"></Button>
 
+                    
                     <Button
                         android:id="@+id/btnStop"
                         android:layout_width="wrap_content"
@@ -95,8 +96,9 @@
     <!-- Side navigation drawer UI -->
     <ExpandableListView
         android:id="@+id/simpleExpandableListView"
-        android:layout_width="400dp"
+        android:layout_width="300dp"
         android:layout_height="match_parent"
+        android:layout_marginLeft="@dimen/twenty"
         android:layout_gravity="left|start"
         android:background="#ffeeeeee" />
 
