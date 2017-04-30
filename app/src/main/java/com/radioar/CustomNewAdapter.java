@@ -44,8 +44,8 @@ public class CustomNewAdapter extends BaseExpandableListAdapter {
             view = infalInflater.inflate(R.layout.child_items, null);
         }
 
-        TextView sequence = (TextView) view.findViewById(R.id.sequence);
-        sequence.setText(detailInfo.getLink().trim() + ". ");
+        /*TextView sequence = (TextView) view.findViewById(R.id.sequence);
+        sequence.setText(detailInfo.getLink().trim() + ". ");*/
         TextView childItem = (TextView) view.findViewById(R.id.childItem);
         childItem.setText(detailInfo.getName().trim());
 

@@ -5,21 +5,10 @@
     android:orientation="vertical">
 
     <TextView
-        android:id="@+id/sequence"
-        android:layout_width="wrap_content"
-        android:layout_height="50dp"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true"
-        android:gravity="center"
-        android:paddingLeft="35sp"
-        android:textAppearance="?android:attr/textAppearanceMedium" />
-
-    <TextView
         android:id="@+id/childItem"
         android:layout_width="wrap_content"
         android:layout_height="50dp"
         android:layout_alignParentTop="true"
-        android:layout_toRightOf="@id/sequence"
         android:gravity="center"
         android:textAppearance="?android:attr/textAppearanceMedium" />
 
