@@ -16,7 +16,6 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 
-
 public class MainActivity extends ActionBarActivity {
 
     private ExpandableListView simpleExpandableListView;
@@ -156,9 +155,6 @@ public class MainActivity extends ActionBarActivity {
     }
 
 
-
-
-
     //method to expand all groups
     private void expandAll() {
         int count = listAdapter.getGroupCount();
@@ -178,8 +174,8 @@ public class MainActivity extends ActionBarActivity {
     //load some initial data into out list
     private void loadData() {
 
-        addProduct(getString(R.string.international_radio), "http://www.accuradio.com/");
-        addProduct(getString(R.string.international_radio), "https://en.wikipedia.org/wiki/List_of_Internet_radio_stations");
+        addProduct(getString(R.string.international_radio), "Accu Radio");
+        addProduct(getString(R.string.international_radio), "BBC Local Radio");
         addProduct(getString(R.string.international_radio), "https://www.programmableweb.com/news/50000-radio-stations-one-api/2012/01/26");
         addProduct(getString(R.string.international_radio), "https://developer.orange.com/apis/orangeradio/”");
 
