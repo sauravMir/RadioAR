@@ -126,7 +126,8 @@ public class RadioActivity extends BaseActivity implements OnClickListener {
         player = new MediaPlayer();
         try {
             //player.setDataSource("http://usa8-vn.mixstream.net:8138");
-            player.setDataSource("http://server2.crearradio.com:8371");
+            //player.setDataSource("http://server2.crearradio.com:8371");
+            player.setDataSource("http://s4.voscast.com:8432");
 
         } catch (IllegalArgumentException e) {
             e.printStackTrace();
@@ -154,19 +155,6 @@ public class RadioActivity extends BaseActivity implements OnClickListener {
     }
 
 
-   /* private void setButtonHandlers() {
-        ((Button) findViewById(R.id.btnStart)).setOnClickListener(btnClick);
-        ((Button) findViewById(R.id.btnStop)).setOnClickListener(btnClick);
-    }*/
-
-   /* private void enableButton(int id, boolean isEnable) {
-        ((Button) findViewById(id)).setEnabled(isEnable);
-    }*/
-
-   /* private void enableButtons(boolean isRecording) {
-        enableButton(R.id.btnStart, !isRecording);
-        enableButton(R.id.btnStop, isRecording);
-    }*/
 
     int BufferElements2Rec = 1024; // want to play 2048 (2K) since 2 bytes we
     // use only 1024
@@ -256,23 +244,6 @@ public class RadioActivity extends BaseActivity implements OnClickListener {
         }
     }
 
-/*    private View.OnClickListener btnClick = new View.OnClickListener() {
-        public void onClick(View v) {
-            switch (v.getId()) {
-                case R.id.btnStart: {
-                    enableButtons(true);
-                    startRecording();
-                    break;
-                }
-                case R.id.btnStop: {
-                    enableButtons(false);
-                    stopRecording();
-                    break;
-                }
-            }
-        }
-    };*/
-
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
 
@@ -310,18 +281,7 @@ public class RadioActivity extends BaseActivity implements OnClickListener {
 
     }
 
-/* else if (v == btnStart) {
-        //enableButtons(true);
-        try {
-            recorderNew.start();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    } else if (v == btnStop) {
-        if(recorderNew.isRecording()){
-            recorderNew.stop();
-        }
-    }*/
+
 public void dialogFileName() {
     final Dialog dialog = new Dialog(this, R.style.CustomAlertDialog);
     dialog.setContentView(R.layout.dialog_share_file_name);

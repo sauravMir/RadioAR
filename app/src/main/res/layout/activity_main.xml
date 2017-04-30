@@ -4,7 +4,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <!-- The first child in the layout is for the main Activity UI-->
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -15,33 +14,15 @@
         android:paddingTop="@dimen/activity_vertical_margin"
         tools:context=".MainActivity">
 
-        <!--<TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:text="Holy Operating Systems, Batdroid!"
-            android:textSize="24sp"
-            android:gravity="center"
-            android:layout_marginTop="100dp"/>
-
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/batdroid"
-            android:layout_alignParentBottom="true"
-            android:layout_centerHorizontal="true"/>-->
-
-
-
     </RelativeLayout>
 
     <!-- Side navigation drawer UI -->
     <ExpandableListView
-    android:id="@+id/simpleExpandableListView"
-    android:layout_width="500dp"
-    android:layout_height="match_parent"
-    android:layout_gravity="left|start"
-    android:background="#ffeeeeee" />
+        android:id="@+id/simpleExpandableListView"
+        android:layout_width="400dp"
+        android:layout_height="match_parent"
+        android:layout_gravity="left|start"
+        android:background="#ffeeeeee" />
 
 
     <!--<ExpandableListView

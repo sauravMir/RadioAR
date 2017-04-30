@@ -11,6 +11,8 @@
     <string name="cancel">Cancel</string>
     <string name="cabin_number">Cabin number</string>
     <string name="cabin_name">Cabin name</string>
+    <string name="international_radio">International radios:</string>
+    <string name="local_radio">Local Radios:</string>
 
     <string-array name="text">
         <item> Excursion 1 </item>

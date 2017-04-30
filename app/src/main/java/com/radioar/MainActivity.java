@@ -1,6 +1,5 @@
 package com.radioar;
 
-import android.app.Dialog;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v4.widget.DrawerLayout;
@@ -10,8 +9,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ExpandableListView;
 import android.widget.Toast;
 
@@ -147,8 +144,6 @@ public class MainActivity extends ActionBarActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
-            //Toast.makeText(activity, "Search Clicked", Toast.LENGTH_SHORT).show();
-            dialogForSearch();
 
             return true;
         }
@@ -162,34 +157,7 @@ public class MainActivity extends ActionBarActivity {
     }
 
 
-    public void dialogForSearch() {
-        final Dialog dialog = new Dialog(activity, R.style.CustomAlertDialog);
-        dialog.setContentView(R.layout.dialog_search);
-        dialog.setCancelable(false);
 
-        EditText edtCabinNumber = (EditText) dialog.findViewById(R.id.edtCabinNumber);
-        EditText edtCabinName = (EditText) dialog.findViewById(R.id.edtCabinName);
-        Button btnCancel = (Button) dialog.findViewById(R.id.btnCancel);
-        Button btnOk = (Button) dialog.findViewById(R.id.btnOk);
-
-
-        btnCancel.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dialog.dismiss();
-            }
-        });
-        btnOk.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                dialog.dismiss();
-            }
-        });
-
-        dialog.show();
-
-    }
 
 
     //method to expand all groups
@@ -211,12 +179,14 @@ public class MainActivity extends ActionBarActivity {
     //load some initial data into out list
     private void loadData() {
 
-        addProduct("Android", "ListView");
-        addProduct("Android", "ExpandableListView");
-        addProduct("Android", "GridView");
+        addProduct(getString(R.string.international_radio), "http://www.accuradio.com/");
+        addProduct(getString(R.string.international_radio), "https://en.wikipedia.org/wiki/List_of_Internet_radio_stations");
+        addProduct(getString(R.string.international_radio), "https://www.programmableweb.com/news/50000-radio-stations-one-api/2012/01/26");
+        addProduct(getString(R.string.international_radio), "https://developer.orange.com/apis/orangeradio/”");
 
-        addProduct("Java", "PolyMorphism");
-        addProduct("Java", "Collections");
+        addProduct(getString(R.string.local_radio), "PolyMorphism");
+        addProduct(getString(R.string.local_radio), "PolyMorphism");
+        addProduct(getString(R.string.local_radio), "PolyMorphism");
     }
 
 
