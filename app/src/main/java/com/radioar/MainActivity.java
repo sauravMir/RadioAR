@@ -71,7 +71,10 @@ public class MainActivity extends ActionBarActivity {
                 GroupInfo headerInfo = deptList.get(groupPosition);
                 //get the child info
                 ChildInfo detailInfo = headerInfo.getProductList().get(childPosition);
-                Toast.makeText(getBaseContext(), " Clicked on :: " + headerInfo.getName() + "/" + detailInfo.getName(), Toast.LENGTH_LONG).show();
+                Toast.makeText(getBaseContext(), " Clicked on :: " + headerInfo.getName() + "/" + detailInfo.getName(),
+                        Toast.LENGTH_LONG).show();
+
+
                 Intent intent = new Intent(activity, RadioActivity.class);
                 return false;
             }
