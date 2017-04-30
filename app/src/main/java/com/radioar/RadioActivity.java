@@ -11,13 +11,13 @@ import android.media.MediaPlayer.OnPreparedListener;
 import android.media.MediaRecorder;
 import android.os.Bundle;
 import android.os.Environment;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -38,26 +38,31 @@ public class RadioActivity extends BaseActivity implements OnClickListener {
     private Thread recordingThread = null;
     private boolean isRecording = false;
 
-    private ProgressBar playSeekBar;
     private Button buttonPlay, btnStart, btnStop;
     private Button buttonStopPlay;
     private MediaPlayer player;
     Recorder recorderNew;
     String fileName;
-    boolean isPlaying=false;
+    boolean isPlaying = false;
     RadioActivity activity;
     /**
      * Called when the activity is first created.
      */
+    private TextView tvRadioStation;
+    private String stationName = "";
+    private String stationLink = "";
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_radio);
-        activity=this;
-        recorderNew=new Recorder("dsf");
+        tvRadioStation = (TextView) findViewById(R.id.tvRadioStation);
+        stationName = getIntent().getStringExtra(StaticAccess.KEY_STATION_NAME);
+        stationLink = getIntent().getStringExtra(StaticAccess.KEY_STATION_LINK);
+        activity = this;
+        recorderNew = new Recorder("dsf");
         initializeUIElements();
         initializeMediaPlayer();
-
 
 
         //setButtonHandlers();
@@ -71,9 +76,10 @@ public class RadioActivity extends BaseActivity implements OnClickListener {
 
     private void initializeUIElements() {
 
-        playSeekBar = (ProgressBar) findViewById(R.id.progressBar1);
-        playSeekBar.setMax(100);
-        playSeekBar.setVisibility(View.INVISIBLE);
+        tvRadioStation = (TextView) findViewById(R.id.tvRadioStation);
+        if (!TextUtils.isEmpty(stationName)) {
+            tvRadioStation.setText(stationName);
+        }
 
         btnStart = (Button) findViewById(R.id.btnStart);
         btnStart.setOnClickListener(this);
@@ -92,15 +98,10 @@ public class RadioActivity extends BaseActivity implements OnClickListener {
     }
 
 
-
     private void startPlaying() {
         buttonStopPlay.setEnabled(true);
         buttonPlay.setEnabled(false);
-
-        playSeekBar.setVisibility(View.VISIBLE);
-
         player.prepareAsync();
-
         player.setOnPreparedListener(new OnPreparedListener() {
 
             public void onPrepared(MediaPlayer mp) {
@@ -119,7 +120,6 @@ public class RadioActivity extends BaseActivity implements OnClickListener {
 
         buttonPlay.setEnabled(true);
         buttonStopPlay.setEnabled(false);
-        playSeekBar.setVisibility(View.INVISIBLE);
     }
 
     private void initializeMediaPlayer() {
@@ -127,7 +127,10 @@ public class RadioActivity extends BaseActivity implements OnClickListener {
         try {
             //player.setDataSource("http://usa8-vn.mixstream.net:8138");
             //player.setDataSource("http://server2.crearradio.com:8371");
-            player.setDataSource("http://s4.voscast.com:8432");
+            if (!TextUtils.isEmpty(stationLink)) {
+                player.setDataSource(stationLink);
+
+            }
 
         } catch (IllegalArgumentException e) {
             e.printStackTrace();
@@ -140,7 +143,6 @@ public class RadioActivity extends BaseActivity implements OnClickListener {
         player.setOnBufferingUpdateListener(new OnBufferingUpdateListener() {
 
             public void onBufferingUpdate(MediaPlayer mp, int percent) {
-                playSeekBar.setSecondaryProgress(percent);
                 Log.i("Buffering", "" + percent);
             }
         });
@@ -153,7 +155,6 @@ public class RadioActivity extends BaseActivity implements OnClickListener {
             player.stop();
         }
     }
-
 
 
     int BufferElements2Rec = 1024; // want to play 2048 (2K) since 2 bytes we
@@ -196,8 +197,8 @@ public class RadioActivity extends BaseActivity implements OnClickListener {
     private void writeAudioDataToFile() {
         // Write the output audio in byte
 
-        String filePath = Environment.getExternalStorageDirectory()+"/edu_radio/voice8K16bitmono.wav";
-                ;
+        String filePath = Environment.getExternalStorageDirectory() + "/edu_radio/voice8K16bitmono.wav";
+        ;
         short sData[] = new short[BufferElements2Rec];
 
         FileOutputStream os = null;
@@ -258,23 +259,23 @@ public class RadioActivity extends BaseActivity implements OnClickListener {
     public void onClick(View v) {
         Animanation.blink(v);
         if (v == buttonPlay) {
-            isPlaying=true;
+            isPlaying = true;
             startPlaying();
         } else if (v == buttonStopPlay) {
-            isPlaying=false;
+            isPlaying = false;
             stopPlaying();
         } else if (v == btnStart) {
             //enableButtons(true);
 //            startRecording();
-            if(isPlaying){
+            if (isPlaying) {
                 dialogFileName();
-            }else
-                Toast.makeText(activity,"please Play Radio first.", Toast.LENGTH_LONG).show();
+            } else
+                Toast.makeText(activity, "please Play Radio first.", Toast.LENGTH_LONG).show();
 
         } else if (v == btnStop) {
             //enableButtons(false);
 //            stopRecording();
-            if(recorderNew.isRecording()){
+            if (recorderNew.isRecording()) {
                 recorderNew.stop();
             }
         }
@@ -282,41 +283,40 @@ public class RadioActivity extends BaseActivity implements OnClickListener {
     }
 
 
-public void dialogFileName() {
-    final Dialog dialog = new Dialog(this, R.style.CustomAlertDialog);
-    dialog.setContentView(R.layout.dialog_share_file_name);
-    dialog.setCancelable(false);
+    public void dialogFileName() {
+        final Dialog dialog = new Dialog(this, R.style.CustomAlertDialog);
+        dialog.setContentView(R.layout.dialog_share_file_name);
+        dialog.setCancelable(false);
 
-    final TextView etFileName = (EditText) dialog.findViewById(R.id.etFileName);
+        final TextView etFileName = (EditText) dialog.findViewById(R.id.etFileName);
 //        etFileName.setText(getResources().getText(R.string.BackPermission));
 
-    Button btNo = (Button) dialog.findViewById(R.id.btNo);
-    Button btnOk = (Button) dialog.findViewById(R.id.btnOk);
+        Button btNo = (Button) dialog.findViewById(R.id.btNo);
+        Button btnOk = (Button) dialog.findViewById(R.id.btnOk);
 
-    btNo.setOnClickListener(new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
+        btNo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
 
-            dialog.dismiss();
-        }
-    });
-    btnOk.setOnClickListener(new View.OnClickListener() {
-
-        @Override
-        public void onClick(View v) {
-            fileName = etFileName.getText().toString();
-            try {
-                recorderNew.start(fileName);
-            } catch (IOException e) {
-                e.printStackTrace();
+                dialog.dismiss();
             }
-            dialog.dismiss();
-        }
+        });
+        btnOk.setOnClickListener(new View.OnClickListener() {
 
-    });
-    DialogNavBarHide.navBarHide(this, dialog);
+            @Override
+            public void onClick(View v) {
+                fileName = etFileName.getText().toString();
+                try {
+                    recorderNew.start(fileName);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                dialog.dismiss();
+            }
+
+        });
+        DialogNavBarHide.navBarHide(this, dialog);
 
 
-
-}
+    }
 }
