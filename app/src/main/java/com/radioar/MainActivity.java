@@ -137,8 +137,6 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
             public boolean onGroupClick(ExpandableListView parent, View v, int groupPosition, long id) {
                 //get the group header
                 GroupInfo headerInfo = deptList.get(groupPosition);
-                //display it or do something with it
-                Toast.makeText(getBaseContext(), " Header is :: " + headerInfo.getName(), Toast.LENGTH_LONG).show();
 
                 return false;
             }
@@ -350,8 +348,10 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
 
     private void stopPlaying() {
         if (player.isPlaying()) {
-            timer.cancel();
+            if (timer != null)
+                timer.cancel();
             counter = 0;
+            tvTimer.setText("");
             player.stop();
             player.release();
             initializeMediaPlayer("http://s4.voscast.com:8432/");
@@ -414,6 +414,14 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
             startPlaying();
         } else if (v == buttonStopPlay) {
             isPlaying = false;
+            btnStart.setEnabled(true);
+
+            if (recorderNew.isRecording()) {
+                recorderNew.stop();
+                counter = 0;
+                timer.cancel();
+                tvTimer.setText("");
+            }
             stopPlaying();
         } else if (v == btnStart) {
             if (isPlaying) {
@@ -422,6 +430,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
                 Toast.makeText(activity, "please Play Radio first.", Toast.LENGTH_LONG).show();
 
         } else if (v == btnStop) {
+            btnStart.setEnabled(true);
             if (recorderNew.isRecording()) {
                 recorderNew.stop();
                 counter = 0;
@@ -456,9 +465,11 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
             public void onClick(View v) {
                 fileName = etFileName.getText().toString();
                 try {
-                    startCounter();
-                    btnStart.setEnabled(false);
-                    recorderNew.start(fileName);
+                    if (recorderNew != null) {
+                        startCounter();
+                        btnStart.setEnabled(false);
+                        recorderNew.start(fileName);
+                    }
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
