@@ -8,12 +8,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="#ffffffff"
-        android:paddingBottom="@dimen/activity_vertical_margin"
-        android:paddingLeft="@dimen/activity_horizontal_margin"
-        android:paddingRight="@dimen/activity_horizontal_margin"
-        android:paddingTop="@dimen/activity_vertical_margin"
         tools:context=".MainActivity">
-
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -31,36 +26,63 @@
                 android:text="" />
 
 
+            <TextView
+                android:id="@+id/tvTimer"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dip"
+                android:gravity="center"
+                android:text=""
+                android:textSize="@dimen/twenty_five"/>
+
+
             <LinearLayout
                 android:id="@+id/linearLayout1"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="20dip"
-                android:gravity="center">
+                android:layout_height="@dimen/hundred"
+                android:gravity="bottom"
+                android:orientation="vertical"
+                android:weightSum="1">
 
-                <Button
-                    android:id="@+id/buttonPlay"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Play"></Button>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/zero"
+                    android:layout_weight=".5"
+                    android:gravity="center"
+                    android:orientation="horizontal">
 
-                <Button
-                    android:id="@+id/buttonStopPlay"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Stop"></Button>
+                    <Button
+                        android:id="@+id/buttonPlay"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Play"></Button>
 
-                <Button
-                    android:id="@+id/btnStart"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Start Record"></Button>
+                    <Button
+                        android:id="@+id/buttonStopPlay"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Stop"></Button>
+                </LinearLayout>
 
-                <Button
-                    android:id="@+id/btnStop"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Stop Record"></Button>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/zero"
+                    android:gravity="center"
+                    android:layout_weight=".5">
+
+                    <Button
+                        android:id="@+id/btnStart"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Start Record"></Button>
+
+                    <Button
+                        android:id="@+id/btnStop"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Stop Record"></Button>
+
+                </LinearLayout>
 
 
             </LinearLayout>
