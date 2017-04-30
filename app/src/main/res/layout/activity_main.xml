@@ -23,7 +23,9 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dip"
                 android:gravity="center"
-                android:text="" />
+                android:text=""
+                android:textColor="@color/white"
+                android:textSize="@dimen/twenty_five" />
 
 
             <TextView
@@ -33,7 +35,8 @@
                 android:layout_marginTop="10dip"
                 android:gravity="center"
                 android:text=""
-                android:textSize="@dimen/twenty_five"/>
+                android:textColor="@color/white"
+                android:textSize="@dimen/twenty_five" />
 
 
             <LinearLayout
@@ -67,8 +70,8 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/zero"
-                    android:gravity="center"
-                    android:layout_weight=".5">
+                    android:layout_weight=".5"
+                    android:gravity="center">
 
                     <Button
                         android:id="@+id/btnStart"
@@ -98,8 +101,8 @@
         android:id="@+id/simpleExpandableListView"
         android:layout_width="300dp"
         android:layout_height="match_parent"
-        android:layout_marginLeft="@dimen/twenty"
         android:layout_gravity="left|start"
+        android:layout_marginLeft="@dimen/twenty"
         android:background="#ffeeeeee" />
 
 

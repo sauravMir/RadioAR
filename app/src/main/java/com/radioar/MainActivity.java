@@ -200,10 +200,10 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+        /*if (id == R.id.action_settings) {
 
             return true;
-        }
+        }*/
 
         // Activate the navigation drawer toggle
         if (mDrawerToggle.onOptionsItemSelected(item)) {
@@ -233,10 +233,10 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
     //load some initial data into out list
     private void loadData() {
 
-        addProduct(getString(R.string.international_radio), "Accu Radio", "http://www.accuradio.com/");
+        addProduct(getString(R.string.international_radio), "Accu Radio", "http://s4.voscast.com:8432");
         addProduct(getString(R.string.international_radio), "BBC Local Radio", "https://en.wikipedia.org/wiki/List_of_Internet_radio_stations");
-        addProduct(getString(R.string.international_radio), "Shoutcast ", "https://www.programmableweb.com/news/50000-radio-stations-one-api/2012/01/26");
-        addProduct(getString(R.string.international_radio), "bcb", "https://developer.orange.com/apis/orangeradio/");
+        addProduct(getString(R.string.international_radio), "Shoutcast ", "http://s4.voscast.com:8432");
+        addProduct(getString(R.string.international_radio), "bcb", "http://173.208.157.101:8020 ");
 
         addProduct(getString(R.string.local_radio), "Radio Plus", "http://s4.voscast.com:8432");
         addProduct(getString(R.string.local_radio), "Radio One", "http://173.208.157.101:8020 ");
@@ -267,10 +267,10 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
 
         //get the children for the group
         ArrayList<ChildInfo> productList = headerInfo.getProductList();
-        //size of the children list
+      /*  //size of the children list
         int listSize = productList.size();
         //add to the counter
-        listSize++;
+        listSize++;*/
 
         //create a new child and add that to the group
         ChildInfo detailInfo = new ChildInfo();
@@ -337,7 +337,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
                             tvTimer.post(new Runnable() {
                                 @Override
                                 public void run() {
-                                    tvTimer.setText(String.valueOf(counter));
+                                    tvTimer.setText(String.valueOf(counter) + "s");
                                     counter++;
                                 }
                             });
@@ -354,6 +354,8 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
 
     private void stopPlaying() {
         if (player.isPlaying()) {
+            timer.cancel();
+            counter = 0;
             player.stop();
             player.release();
             initializeMediaPlayer("http://s4.voscast.com:8432/");
@@ -398,95 +400,6 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
     }
 
 
-    int BufferElements2Rec = 1024; // want to play 2048 (2K) since 2 bytes we
-    // use only 1024
-    int BytesPerElement = 2; // 2 bytes in 16bit format
-
-    private void startRecording() {
-        startCounter();
-        recorder = new AudioRecord(MediaRecorder.AudioSource.MIC,
-                RECORDER_SAMPLERATE, RECORDER_CHANNELS,
-                RECORDER_AUDIO_ENCODING, BufferElements2Rec * BytesPerElement);
-
-        recorder.startRecording();
-        isRecording = true;
-
-        recordingThread = new Thread(new Runnable() {
-
-            public void run() {
-
-                writeAudioDataToFile();
-
-            }
-        }, "AudioRecorder Thread");
-        recordingThread.start();
-    }
-
-    private byte[] short2byte(short[] sData) {
-        int shortArrsize = sData.length;
-        byte[] bytes = new byte[shortArrsize * 2];
-
-        for (int i = 0; i < shortArrsize; i++) {
-            bytes[i * 2] = (byte) (sData[i] & 0x00FF);
-            bytes[(i * 2) + 1] = (byte) (sData[i] >> 8);
-            sData[i] = 0;
-        }
-        return bytes;
-
-    }
-
-    private void writeAudioDataToFile() {
-        // Write the output audio in byte
-
-        String filePath = Environment.getExternalStorageDirectory() + "/edu_radio/voice8K16bitmono.wav";
-        ;
-        short sData[] = new short[BufferElements2Rec];
-
-        FileOutputStream os = null;
-        try {
-            os = new FileOutputStream(filePath);
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
-
-        while (isRecording) {
-            // gets the voice output from microphone to byte format
-
-            recorder.read(sData, 0, BufferElements2Rec);
-            System.out.println("Short wirting to file" + sData.toString());
-            try {
-                // // writes the data to file from buffer
-                // // stores the voice buffer
-
-                byte bData[] = short2byte(sData);
-
-                os.write(bData, 0, BufferElements2Rec * BytesPerElement);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-
-        try {
-            os.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private void stopRecording() {
-        // stops the recording activity
-        if (null != recorder) {
-            isRecording = false;
-
-            recorder.stop();
-            recorder.release();
-
-            recorder = null;
-            recordingThread = null;
-            counter = 0;
-        }
-    }
-
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
 
@@ -507,20 +420,17 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
             isPlaying = false;
             stopPlaying();
         } else if (v == btnStart) {
-//            enableButtons(true);
-//            startRecording();
             if (isPlaying) {
                 dialogFileName();
             } else
                 Toast.makeText(activity, "please Play Radio first.", Toast.LENGTH_LONG).show();
 
         } else if (v == btnStop) {
-            //enableButtons(false);
-//            stopRecording();
             if (recorderNew.isRecording()) {
                 recorderNew.stop();
                 counter = 0;
                 timer.cancel();
+                tvTimer.setText("");
             }
         }
 
@@ -533,7 +443,6 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         dialog.setCancelable(false);
 
         final TextView etFileName = (EditText) dialog.findViewById(R.id.etFileName);
-//        etFileName.setText(getResources().getText(R.string.BackPermission));
 
         Button btNo = (Button) dialog.findViewById(R.id.btNo);
         Button btnOk = (Button) dialog.findViewById(R.id.btnOk);
