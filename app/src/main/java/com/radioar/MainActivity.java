@@ -75,6 +75,7 @@ public class MainActivity extends ActionBarActivity {
                         Toast.LENGTH_LONG).show();
 
 
+
                 Intent intent = new Intent(activity, RadioActivity.class);
                 return false;
             }
@@ -177,24 +178,25 @@ public class MainActivity extends ActionBarActivity {
     //load some initial data into out list
     private void loadData() {
 
-        addProduct(getString(R.string.international_radio), "Accu Radio");
-        addProduct(getString(R.string.international_radio), "BBC Local Radio");
-        addProduct(getString(R.string.international_radio), "https://www.programmableweb.com/news/50000-radio-stations-one-api/2012/01/26");
-        addProduct(getString(R.string.international_radio), "https://developer.orange.com/apis/orangeradio/”");
+        addProduct(getString(R.string.international_radio), "Accu Radio", "http://www.accuradio.com/");
+        addProduct(getString(R.string.international_radio), "BBC Local Radio", "https://en.wikipedia.org/wiki/List_of_Internet_radio_stations");
+        addProduct(getString(R.string.international_radio), "Shoutcast ", "https://www.programmableweb.com/news/50000-radio-stations-one-api/2012/01/26");
+        addProduct(getString(R.string.international_radio), "bcb", "https://developer.orange.com/apis/orangeradio/");
 
-        addProduct(getString(R.string.local_radio), "Radio Plus");
-        addProduct(getString(R.string.local_radio), "Radio One");
-        addProduct(getString(R.string.local_radio), "Top Fm");
-        addProduct(getString(R.string.local_radio), "MBC radio");
-        addProduct(getString(R.string.local_radio), "Taal FM ");
-        addProduct(getString(R.string.local_radio), "Kool Fm");
-        addProduct(getString(R.string.local_radio), "Music FM");
-        addProduct(getString(R.string.local_radio), "Best fm ");
+        addProduct(getString(R.string.local_radio), "Radio Plus","http://radioplus.defimedia.info/");
+        addProduct(getString(R.string.local_radio), "Radio One","http://www.r1.mu/");
+        addProduct(getString(R.string.local_radio), "Top Fm","http://www.topfmradio.com/");
+        addProduct(getString(R.string.local_radio), "MBC radio","http://www.mbcradio.tv/sites/all/themes/mbcradiotv/templates/radio-mauritius.html");
+
+        addProduct(getString(R.string.local_radio), "Taal FM ","http://www.mbcradio.tv/sites/all/themes/mbcradiotv/templates/taalfm.html");
+        addProduct(getString(R.string.local_radio), "Kool Fm","http://www.mbcradio.tv/sites/all/themes/mbcradiotv/templates/koolfm.html");
+        addProduct(getString(R.string.local_radio), "Music FM","http://www.mbcradio.tv/sites/all/themes/mbcradiotv/templates/musicfm.html");
+        addProduct(getString(R.string.local_radio), "Best fm ","http://www.mbcradio.tv/sites/all/themes/mbcradiotv/templates/bestfm.html");
     }
 
 
     //here we maintain our products in various departments
-    private int addProduct(String department, String product) {
+    private int addProduct(String department, String title, String link) {
 
         int groupPosition = 0;
 
@@ -217,8 +219,8 @@ public class MainActivity extends ActionBarActivity {
 
         //create a new child and add that to the group
         ChildInfo detailInfo = new ChildInfo();
-        detailInfo.setLink(String.valueOf(listSize));
-        detailInfo.setName(product);
+        detailInfo.setLink(link);
+        detailInfo.setName(title);
         productList.add(detailInfo);
         headerInfo.setProductList(productList);
 
