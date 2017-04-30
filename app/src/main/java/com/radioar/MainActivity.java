@@ -1,52 +1,92 @@
 package com.radioar;
 
-import android.content.Intent;
+import android.app.Dialog;
 import android.content.res.Configuration;
+import android.media.AudioFormat;
+import android.media.AudioRecord;
+import android.media.MediaPlayer;
+import android.media.MediaRecorder;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.text.TextUtils;
+import android.util.Log;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ExpandableListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.educareapps.mylibrary.Animanation;
+import com.educareapps.mylibrary.DialogNavBarHide;
+
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 
-public class MainActivity extends ActionBarActivity {
+public class MainActivity extends ActionBarActivity implements View.OnClickListener {
 
     private ExpandableListView simpleExpandableListView;
     private DrawerLayout mDrawerLayout;
     private ArrayAdapter<String> mAdapter;
     private ActionBarDrawerToggle mDrawerToggle;
     private String mActivityTitle;
-
-
     private LinkedHashMap<String, GroupInfo> subjects = new LinkedHashMap<String, GroupInfo>();
     private ArrayList<GroupInfo> deptList = new ArrayList<GroupInfo>();
     private CustomNewAdapter listAdapter;
-
     MainActivity activity;
+
+
+    private static final int RECORDER_SAMPLERATE = 8000;
+    private static final int RECORDER_CHANNELS = AudioFormat.CHANNEL_IN_MONO;
+    private static final int RECORDER_AUDIO_ENCODING = AudioFormat.ENCODING_PCM_16BIT;
+    private AudioRecord recorder = null;
+    private Thread recordingThread = null;
+    private boolean isRecording = false;
+
+    private Button buttonPlay, btnStart, btnStop;
+    private Button buttonStopPlay;
+    private MediaPlayer player;
+    Recorder recorderNew;
+    String fileName;
+    boolean isPlaying = false;
+    private TextView tvRadioStation;
+    private String stationName = "";
+    private String stationLink = "";
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         activity = this;
-
-        // mDrawerList = (ExpandableListView) findViewById(R.id.navList);
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mActivityTitle = getTitle().toString();
-
-
         addDrawerItems();
         setupDrawer();
-
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
+
+
+        tvRadioStation = (TextView) findViewById(R.id.tvRadioStation);
+        stationName = getIntent().getStringExtra(StaticAccess.KEY_STATION_NAME);
+        stationLink = getIntent().getStringExtra(StaticAccess.KEY_STATION_LINK);
+        recorderNew = new Recorder("dsf");
+        initializeUIElements();
+        initializeMediaPlayer();
+        int bufferSize = AudioRecord.getMinBufferSize(RECORDER_SAMPLERATE, RECORDER_CHANNELS, RECORDER_AUDIO_ENCODING);
+        System.out.println("BUFFER SIZE VALUE IS " + bufferSize);
+
+
     }
 
     private void addDrawerItems() {
@@ -74,9 +114,6 @@ public class MainActivity extends ActionBarActivity {
                 Toast.makeText(getBaseContext(), " Clicked on :: " + headerInfo.getName() + "/" + detailInfo.getName(),
                         Toast.LENGTH_LONG).show();
 
-
-
-                Intent intent = new Intent(activity, RadioActivity.class);
                 return false;
             }
         });
@@ -183,15 +220,15 @@ public class MainActivity extends ActionBarActivity {
         addProduct(getString(R.string.international_radio), "Shoutcast ", "https://www.programmableweb.com/news/50000-radio-stations-one-api/2012/01/26");
         addProduct(getString(R.string.international_radio), "bcb", "https://developer.orange.com/apis/orangeradio/");
 
-        addProduct(getString(R.string.local_radio), "Radio Plus","http://radioplus.defimedia.info/");
-        addProduct(getString(R.string.local_radio), "Radio One","http://www.r1.mu/");
-        addProduct(getString(R.string.local_radio), "Top Fm","http://www.topfmradio.com/");
-        addProduct(getString(R.string.local_radio), "MBC radio","http://www.mbcradio.tv/sites/all/themes/mbcradiotv/templates/radio-mauritius.html");
+        addProduct(getString(R.string.local_radio), "Radio Plus", "http://radioplus.defimedia.info/");
+        addProduct(getString(R.string.local_radio), "Radio One", "http://www.r1.mu/");
+        addProduct(getString(R.string.local_radio), "Top Fm", "http://www.topfmradio.com/");
+        addProduct(getString(R.string.local_radio), "MBC radio", "http://www.mbcradio.tv/sites/all/themes/mbcradiotv/templates/radio-mauritius.html");
 
-        addProduct(getString(R.string.local_radio), "Taal FM ","http://www.mbcradio.tv/sites/all/themes/mbcradiotv/templates/taalfm.html");
-        addProduct(getString(R.string.local_radio), "Kool Fm","http://www.mbcradio.tv/sites/all/themes/mbcradiotv/templates/koolfm.html");
-        addProduct(getString(R.string.local_radio), "Music FM","http://www.mbcradio.tv/sites/all/themes/mbcradiotv/templates/musicfm.html");
-        addProduct(getString(R.string.local_radio), "Best fm ","http://www.mbcradio.tv/sites/all/themes/mbcradiotv/templates/bestfm.html");
+        addProduct(getString(R.string.local_radio), "Taal FM ", "http://www.mbcradio.tv/sites/all/themes/mbcradiotv/templates/taalfm.html");
+        addProduct(getString(R.string.local_radio), "Kool Fm", "http://www.mbcradio.tv/sites/all/themes/mbcradiotv/templates/koolfm.html");
+        addProduct(getString(R.string.local_radio), "Music FM", "http://www.mbcradio.tv/sites/all/themes/mbcradiotv/templates/musicfm.html");
+        addProduct(getString(R.string.local_radio), "Best fm ", "http://www.mbcradio.tv/sites/all/themes/mbcradiotv/templates/bestfm.html");
     }
 
 
@@ -227,6 +264,253 @@ public class MainActivity extends ActionBarActivity {
         //find the group position inside the list
         groupPosition = deptList.indexOf(headerInfo);
         return groupPosition;
+    }
+
+
+    private void initializeUIElements() {
+
+        tvRadioStation = (TextView) findViewById(R.id.tvRadioStation);
+        if (!TextUtils.isEmpty(stationName)) {
+            tvRadioStation.setText(stationName);
+        }
+
+        btnStart = (Button) findViewById(R.id.btnStart);
+        btnStart.setOnClickListener(this);
+
+        btnStop = (Button) findViewById(R.id.btnStop);
+        btnStop.setOnClickListener(this);
+
+        buttonPlay = (Button) findViewById(R.id.buttonPlay);
+        buttonPlay.setOnClickListener(this);
+
+
+        buttonStopPlay = (Button) findViewById(R.id.buttonStopPlay);
+        buttonStopPlay.setEnabled(false);
+        buttonStopPlay.setOnClickListener(this);
+
+    }
+
+
+    private void startPlaying() {
+        buttonStopPlay.setEnabled(true);
+        buttonPlay.setEnabled(false);
+        player.prepareAsync();
+        player.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+
+            public void onPrepared(MediaPlayer mp) {
+                player.start();
+            }
+        });
+
+    }
+
+    private void stopPlaying() {
+        if (player.isPlaying()) {
+            player.stop();
+            player.release();
+            initializeMediaPlayer();
+        }
+
+        buttonPlay.setEnabled(true);
+        buttonStopPlay.setEnabled(false);
+    }
+
+    private void initializeMediaPlayer() {
+        player = new MediaPlayer();
+        try {
+            //player.setDataSource("http://usa8-vn.mixstream.net:8138");
+            //player.setDataSource("http://server2.crearradio.com:8371");
+            if (!TextUtils.isEmpty(stationLink)) {
+                player.setDataSource(stationLink);
+
+            }
+
+        } catch (IllegalArgumentException e) {
+            e.printStackTrace();
+        } catch (IllegalStateException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        player.setOnBufferingUpdateListener(new MediaPlayer.OnBufferingUpdateListener() {
+
+            public void onBufferingUpdate(MediaPlayer mp, int percent) {
+                Log.i("Buffering", "" + percent);
+            }
+        });
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if (player.isPlaying()) {
+            player.stop();
+        }
+    }
+
+
+    int BufferElements2Rec = 1024; // want to play 2048 (2K) since 2 bytes we
+    // use only 1024
+    int BytesPerElement = 2; // 2 bytes in 16bit format
+
+    private void startRecording() {
+
+        recorder = new AudioRecord(MediaRecorder.AudioSource.MIC,
+                RECORDER_SAMPLERATE, RECORDER_CHANNELS,
+                RECORDER_AUDIO_ENCODING, BufferElements2Rec * BytesPerElement);
+
+        recorder.startRecording();
+        isRecording = true;
+
+        recordingThread = new Thread(new Runnable() {
+
+            public void run() {
+
+                writeAudioDataToFile();
+
+            }
+        }, "AudioRecorder Thread");
+        recordingThread.start();
+    }
+
+    private byte[] short2byte(short[] sData) {
+        int shortArrsize = sData.length;
+        byte[] bytes = new byte[shortArrsize * 2];
+
+        for (int i = 0; i < shortArrsize; i++) {
+            bytes[i * 2] = (byte) (sData[i] & 0x00FF);
+            bytes[(i * 2) + 1] = (byte) (sData[i] >> 8);
+            sData[i] = 0;
+        }
+        return bytes;
+
+    }
+
+    private void writeAudioDataToFile() {
+        // Write the output audio in byte
+
+        String filePath = Environment.getExternalStorageDirectory() + "/edu_radio/voice8K16bitmono.wav";
+        ;
+        short sData[] = new short[BufferElements2Rec];
+
+        FileOutputStream os = null;
+        try {
+            os = new FileOutputStream(filePath);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        while (isRecording) {
+            // gets the voice output from microphone to byte format
+
+            recorder.read(sData, 0, BufferElements2Rec);
+            System.out.println("Short wirting to file" + sData.toString());
+            try {
+                // // writes the data to file from buffer
+                // // stores the voice buffer
+
+                byte bData[] = short2byte(sData);
+
+                os.write(bData, 0, BufferElements2Rec * BytesPerElement);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        try {
+            os.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void stopRecording() {
+        // stops the recording activity
+        if (null != recorder) {
+            isRecording = false;
+
+            recorder.stop();
+            recorder.release();
+
+            recorder = null;
+            recordingThread = null;
+        }
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+
+            finish();
+        }
+        return super.onKeyDown(keyCode, event);
+    }
+
+
+    public void onClick(View v) {
+        Animanation.blink(v);
+        if (v == buttonPlay) {
+            isPlaying = true;
+            startPlaying();
+        } else if (v == buttonStopPlay) {
+            isPlaying = false;
+            stopPlaying();
+        } else if (v == btnStart) {
+            //enableButtons(true);
+//            startRecording();
+            if (isPlaying) {
+                dialogFileName();
+            } else
+                Toast.makeText(activity, "please Play Radio first.", Toast.LENGTH_LONG).show();
+
+        } else if (v == btnStop) {
+            //enableButtons(false);
+//            stopRecording();
+            if (recorderNew.isRecording()) {
+                recorderNew.stop();
+            }
+        }
+
+    }
+
+
+    public void dialogFileName() {
+        final Dialog dialog = new Dialog(this, R.style.CustomAlertDialog);
+        dialog.setContentView(R.layout.dialog_share_file_name);
+        dialog.setCancelable(false);
+
+        final TextView etFileName = (EditText) dialog.findViewById(R.id.etFileName);
+//        etFileName.setText(getResources().getText(R.string.BackPermission));
+
+        Button btNo = (Button) dialog.findViewById(R.id.btNo);
+        Button btnOk = (Button) dialog.findViewById(R.id.btnOk);
+
+        btNo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                dialog.dismiss();
+            }
+        });
+        btnOk.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                fileName = etFileName.getText().toString();
+                try {
+                    recorderNew.start(fileName);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                dialog.dismiss();
+            }
+
+        });
+        DialogNavBarHide.navBarHide(this, dialog);
+
+
     }
 
 
