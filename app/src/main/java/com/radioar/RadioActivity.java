@@ -1,6 +1,6 @@
 
 
-package com.teamtreehouse.oslist;
+package com.radioar;
 
 import android.app.Dialog;
 import android.media.AudioFormat;

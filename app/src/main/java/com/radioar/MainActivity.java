@@ -1,4 +1,4 @@
-package com.teamtreehouse.oslist;
+package com.radioar;
 
 import android.app.Dialog;
 import android.content.res.Configuration;
@@ -53,21 +53,6 @@ public class MainActivity extends ActionBarActivity {
     }
 
     private void addDrawerItems() {
-        //String[] osArray = {"Android", "iOS", "Windows", "OS X", "Linux"};
-
-        /*String[] osArray = getResources().getStringArray(R.array.text);
-
-        mAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, osArray);
-
-        mDrawerList.setAdapter(mAdapter);
-
-        mDrawerList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Toast.makeText(MainActivity.this, (String) parent.getItemAtPosition(position), Toast.LENGTH_SHORT).show();
-            }
-        });*/
-
 
         loadData();
 
@@ -122,7 +107,6 @@ public class MainActivity extends ActionBarActivity {
                 invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
             }
 
-            /** Called when a drawer has settled in a completely closed state. */
             public void onDrawerClosed(View view) {
                 super.onDrawerClosed(view);
                 getSupportActionBar().setTitle(mActivityTitle);

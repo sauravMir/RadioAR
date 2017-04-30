@@ -1,4 +1,4 @@
-package com.teamtreehouse.oslist;
+package com.radioar;
 
 public class ChildInfo {
 
