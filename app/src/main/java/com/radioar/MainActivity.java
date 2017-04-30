@@ -4,6 +4,8 @@ import android.app.Dialog;
 import android.content.res.Configuration;
 import android.media.AudioFormat;
 import android.media.AudioRecord;
+import android.media.MediaPlayer.OnPreparedListener;
+import android.media.MediaPlayer.OnBufferingUpdateListener;
 import android.media.MediaPlayer;
 import android.media.MediaRecorder;
 import android.os.Bundle;
@@ -295,7 +297,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         buttonStopPlay.setEnabled(true);
         buttonPlay.setEnabled(false);
         player.prepareAsync();
-        player.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+        player.setOnPreparedListener(new OnPreparedListener() {
 
             public void onPrepared(MediaPlayer mp) {
                 player.start();
@@ -333,7 +335,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
             e.printStackTrace();
         }
 
-        player.setOnBufferingUpdateListener(new MediaPlayer.OnBufferingUpdateListener() {
+        player.setOnBufferingUpdateListener(new OnBufferingUpdateListener() {
 
             public void onBufferingUpdate(MediaPlayer mp, int percent) {
                 Log.i("Buffering", "" + percent);
