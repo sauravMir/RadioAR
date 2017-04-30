@@ -7,9 +7,7 @@ import android.media.AudioRecord;
 import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnBufferingUpdateListener;
 import android.media.MediaPlayer.OnPreparedListener;
-import android.media.MediaRecorder;
 import android.os.Bundle;
-import android.os.Environment;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -29,8 +27,6 @@ import android.widget.Toast;
 import com.educareapps.mylibrary.Animanation;
 import com.educareapps.mylibrary.DialogNavBarHide;
 
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -461,6 +457,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
                 fileName = etFileName.getText().toString();
                 try {
                     startCounter();
+                    btnStart.setEnabled(false);
                     recorderNew.start(fileName);
                 } catch (IOException e) {
                     e.printStackTrace();
