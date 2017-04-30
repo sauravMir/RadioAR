@@ -5,5 +5,8 @@ package com.radioar;
  */
 
 public class StaticAccess {
-   public  static final String APP_RECORD="Record";
+    public static final String APP_RECORD = "Record";
+    public static final String KEY_STATION_NAME = "stationName";
+    public static final String KEY_STATION_LINK = "stationLink";
+
 }
