@@ -4,9 +4,9 @@ import android.app.Dialog;
 import android.content.res.Configuration;
 import android.media.AudioFormat;
 import android.media.AudioRecord;
-import android.media.MediaPlayer.OnPreparedListener;
-import android.media.MediaPlayer.OnBufferingUpdateListener;
 import android.media.MediaPlayer;
+import android.media.MediaPlayer.OnBufferingUpdateListener;
+import android.media.MediaPlayer.OnPreparedListener;
 import android.media.MediaRecorder;
 import android.os.Bundle;
 import android.os.Environment;
@@ -34,6 +34,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class MainActivity extends ActionBarActivity implements View.OnClickListener {
 
@@ -61,7 +63,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
     Recorder recorderNew;
     String fileName;
     boolean isPlaying = false;
-    private TextView tvRadioStation;
+    private TextView tvRadioStation, tvTimer;
     private String stationName = "";
     private String stationLink = "";
 
@@ -80,11 +82,10 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
 
 
         tvRadioStation = (TextView) findViewById(R.id.tvRadioStation);
-        stationName = getIntent().getStringExtra(StaticAccess.KEY_STATION_NAME);
-        stationLink = getIntent().getStringExtra(StaticAccess.KEY_STATION_LINK);
+
         recorderNew = new Recorder("dsf");
         initializeUIElements();
-        initializeMediaPlayer();
+        initializeMediaPlayer("http://s4.voscast.com:8432/");
         int bufferSize = AudioRecord.getMinBufferSize(RECORDER_SAMPLERATE, RECORDER_CHANNELS, RECORDER_AUDIO_ENCODING);
         System.out.println("BUFFER SIZE VALUE IS " + bufferSize);
 
@@ -113,8 +114,23 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
                 GroupInfo headerInfo = deptList.get(groupPosition);
                 //get the child info
                 ChildInfo detailInfo = headerInfo.getProductList().get(childPosition);
-                Toast.makeText(getBaseContext(), " Clicked on :: " + headerInfo.getName() + "/" + detailInfo.getName(),
-                        Toast.LENGTH_LONG).show();
+                stationName = detailInfo.getName();
+                stationLink = detailInfo.getLink();
+                tvRadioStation.setText(stationName);
+                if (isPlaying) {
+                    stopPlaying();
+                    initializeMediaPlayer(stationLink);
+                    isPlaying = true;
+                    startPlaying();
+                    mDrawerLayout.closeDrawers();
+
+                } else {
+                    initializeMediaPlayer(stationLink);
+                    isPlaying = true;
+                    startPlaying();
+                    mDrawerLayout.closeDrawers();
+
+                }
 
                 return false;
             }
@@ -222,9 +238,9 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         addProduct(getString(R.string.international_radio), "Shoutcast ", "https://www.programmableweb.com/news/50000-radio-stations-one-api/2012/01/26");
         addProduct(getString(R.string.international_radio), "bcb", "https://developer.orange.com/apis/orangeradio/");
 
-        addProduct(getString(R.string.local_radio), "Radio Plus", "http://radioplus.defimedia.info/");
-        addProduct(getString(R.string.local_radio), "Radio One", "http://www.r1.mu/");
-        addProduct(getString(R.string.local_radio), "Top Fm", "http://www.topfmradio.com/");
+        addProduct(getString(R.string.local_radio), "Radio Plus", "http://s4.voscast.com:8432");
+        addProduct(getString(R.string.local_radio), "Radio One", "http://173.208.157.101:8020 ");
+        addProduct(getString(R.string.local_radio), "Top Fm", "http://webcast.orange.mu:1935");
         addProduct(getString(R.string.local_radio), "MBC radio", "http://www.mbcradio.tv/sites/all/themes/mbcradiotv/templates/radio-mauritius.html");
 
         addProduct(getString(R.string.local_radio), "Taal FM ", "http://www.mbcradio.tv/sites/all/themes/mbcradiotv/templates/taalfm.html");
@@ -272,9 +288,8 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
     private void initializeUIElements() {
 
         tvRadioStation = (TextView) findViewById(R.id.tvRadioStation);
-        if (!TextUtils.isEmpty(stationName)) {
-            tvRadioStation.setText(stationName);
-        }
+        tvTimer = (TextView) findViewById(R.id.tvTimer);
+
 
         btnStart = (Button) findViewById(R.id.btnStart);
         btnStart.setOnClickListener(this);
@@ -301,29 +316,60 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
 
             public void onPrepared(MediaPlayer mp) {
                 player.start();
+
             }
         });
 
+    }
+
+    Timer timer;
+    int counter = 0;
+
+    void startCounter() {
+        timer = new Timer();
+        timer.scheduleAtFixedRate(new TimerTask() {
+            @Override
+            public void run() {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (player != null && player.isPlaying()) {
+                            tvTimer.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    tvTimer.setText(String.valueOf(counter));
+                                    counter++;
+                                }
+                            });
+                        } else {
+                            timer.cancel();
+                            timer.purge();
+                            Toast.makeText(activity, "Not Playing", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
+            }
+        }, 0, 1000);
     }
 
     private void stopPlaying() {
         if (player.isPlaying()) {
             player.stop();
             player.release();
-            initializeMediaPlayer();
+            initializeMediaPlayer("http://s4.voscast.com:8432/");
         }
 
         buttonPlay.setEnabled(true);
         buttonStopPlay.setEnabled(false);
     }
 
-    private void initializeMediaPlayer() {
+    private void initializeMediaPlayer(String channelLink) {
         player = new MediaPlayer();
         try {
             //player.setDataSource("http://usa8-vn.mixstream.net:8138");
             //player.setDataSource("http://server2.crearradio.com:8371");
-            if (!TextUtils.isEmpty(stationLink)) {
-                player.setDataSource(stationLink);
+            if (!TextUtils.isEmpty(channelLink)) {
+                player.setDataSource(channelLink);
 
             }
 
@@ -357,7 +403,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
     int BytesPerElement = 2; // 2 bytes in 16bit format
 
     private void startRecording() {
-
+        startCounter();
         recorder = new AudioRecord(MediaRecorder.AudioSource.MIC,
                 RECORDER_SAMPLERATE, RECORDER_CHANNELS,
                 RECORDER_AUDIO_ENCODING, BufferElements2Rec * BytesPerElement);
@@ -437,6 +483,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
 
             recorder = null;
             recordingThread = null;
+            counter = 0;
         }
     }
 
@@ -460,7 +507,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
             isPlaying = false;
             stopPlaying();
         } else if (v == btnStart) {
-            //enableButtons(true);
+//            enableButtons(true);
 //            startRecording();
             if (isPlaying) {
                 dialogFileName();
@@ -472,6 +519,8 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
 //            stopRecording();
             if (recorderNew.isRecording()) {
                 recorderNew.stop();
+                counter = 0;
+                timer.cancel();
             }
         }
 
@@ -502,6 +551,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
             public void onClick(View v) {
                 fileName = etFileName.getText().toString();
                 try {
+                    startCounter();
                     recorderNew.start(fileName);
                 } catch (IOException e) {
                     e.printStackTrace();
