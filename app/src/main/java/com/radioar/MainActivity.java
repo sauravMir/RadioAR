@@ -1,5 +1,6 @@
 package com.radioar;
 
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v4.widget.DrawerLayout;
@@ -71,9 +72,8 @@ public class MainActivity extends ActionBarActivity {
                 GroupInfo headerInfo = deptList.get(groupPosition);
                 //get the child info
                 ChildInfo detailInfo = headerInfo.getProductList().get(childPosition);
-                //display it or do something with it
-                Toast.makeText(getBaseContext(), " Clicked on :: " + headerInfo.getName()
-                        + "/" + detailInfo.getName(), Toast.LENGTH_LONG).show();
+                Toast.makeText(getBaseContext(), " Clicked on :: " + headerInfo.getName() + "/" + detailInfo.getName(), Toast.LENGTH_LONG).show();
+                Intent intent = new Intent(activity, RadioActivity.class);
                 return false;
             }
         });
@@ -84,8 +84,7 @@ public class MainActivity extends ActionBarActivity {
                 //get the group header
                 GroupInfo headerInfo = deptList.get(groupPosition);
                 //display it or do something with it
-                Toast.makeText(getBaseContext(), " Header is :: " + headerInfo.getName(),
-                        Toast.LENGTH_LONG).show();
+                Toast.makeText(getBaseContext(), " Header is :: " + headerInfo.getName(), Toast.LENGTH_LONG).show();
 
                 return false;
             }
@@ -184,9 +183,14 @@ public class MainActivity extends ActionBarActivity {
         addProduct(getString(R.string.international_radio), "https://www.programmableweb.com/news/50000-radio-stations-one-api/2012/01/26");
         addProduct(getString(R.string.international_radio), "https://developer.orange.com/apis/orangeradio/”");
 
-        addProduct(getString(R.string.local_radio), "PolyMorphism");
-        addProduct(getString(R.string.local_radio), "PolyMorphism");
-        addProduct(getString(R.string.local_radio), "PolyMorphism");
+        addProduct(getString(R.string.local_radio), "Radio Plus");
+        addProduct(getString(R.string.local_radio), "Radio One");
+        addProduct(getString(R.string.local_radio), "Top Fm");
+        addProduct(getString(R.string.local_radio), "MBC radio");
+        addProduct(getString(R.string.local_radio), "Taal FM ");
+        addProduct(getString(R.string.local_radio), "Kool Fm");
+        addProduct(getString(R.string.local_radio), "Music FM");
+        addProduct(getString(R.string.local_radio), "Best fm ");
     }
 
 
@@ -214,7 +218,7 @@ public class MainActivity extends ActionBarActivity {
 
         //create a new child and add that to the group
         ChildInfo detailInfo = new ChildInfo();
-        detailInfo.setSequence(String.valueOf(listSize));
+        detailInfo.setLink(String.valueOf(listSize));
         detailInfo.setName(product);
         productList.add(detailInfo);
         headerInfo.setProductList(productList);

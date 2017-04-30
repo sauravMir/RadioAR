@@ -2,15 +2,15 @@ package com.radioar;
 
 public class ChildInfo {
 
-    private String sequence = "";
     private String name = "";
+    private String link = "";
 
-    public String getSequence() {
-        return sequence;
+    public String getLink() {
+        return link;
     }
 
-    public void setSequence(String sequence) {
-        this.sequence = sequence;
+    public void setLink(String link) {
+        this.link = link;
     }
 
     public String getName() {
