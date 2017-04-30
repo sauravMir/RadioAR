@@ -76,7 +76,7 @@
                         android:layout_height="wrap_content"
                         android:text="Start Record"></Button>
 
-                    
+
                     <Button
                         android:id="@+id/btnStop"
                         android:layout_width="wrap_content"
