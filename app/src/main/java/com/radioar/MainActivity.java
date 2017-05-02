@@ -25,6 +25,7 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.educareapps.mylibrary.BaseActivity;
 import com.educareapps.mylibrary.DialogNavBarHide;
 
 import java.io.IOException;
@@ -33,7 +34,7 @@ import java.util.LinkedHashMap;
 import java.util.Timer;
 import java.util.TimerTask;
 
-public class MainActivity extends ActionBarActivity implements View.OnClickListener {
+public class MainActivity extends BaseActivity implements View.OnClickListener {
 
     private ExpandableListView simpleExpandableListView;
     private DrawerLayout mDrawerLayout;
