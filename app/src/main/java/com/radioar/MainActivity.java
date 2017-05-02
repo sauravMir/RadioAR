@@ -81,10 +81,13 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
 
         recorderNew = new Recorder("dsf");
         initializeUIElements();
-        initializeMediaPlayer("http://s4.voscast.com:8432/");
         int bufferSize = AudioRecord.getMinBufferSize(RECORDER_SAMPLERATE, RECORDER_CHANNELS, RECORDER_AUDIO_ENCODING);
         System.out.println("BUFFER SIZE VALUE IS " + bufferSize);
-
+        ChildInfo childInfo = (ChildInfo) listAdapter.getChild(0, 0);
+        stationName = childInfo.getName();
+        stationLink = childInfo.getLink();
+        initializeMediaPlayer(stationLink);
+        tvRadioStation.setText(stationName);
 
     }
 
@@ -114,6 +117,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
                 stationLink = detailInfo.getLink();
                 tvRadioStation.setText(stationName);
                 if (isPlaying) {
+                    stopRecording();
                     stopPlaying();
                     initializeMediaPlayer(stationLink);
                     isPlaying = true;
@@ -318,6 +322,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
 
     Timer timer;
     int counter = 0;
+    int minCounter = 0;
 
     void startCounter() {
         timer = new Timer();
@@ -331,8 +336,12 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
                             tvTimer.post(new Runnable() {
                                 @Override
                                 public void run() {
-                                    tvTimer.setText(String.valueOf(counter) + "s");
+                                    tvTimer.setText(String.valueOf(minCounter + " : " + counter) + "s");
                                     counter++;
+                                    if (counter > 59) {
+                                        minCounter++;
+                                        counter = 0;
+                                    }
                                 }
                             });
                         } else {
@@ -351,14 +360,26 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
             if (timer != null)
                 timer.cancel();
             counter = 0;
+            minCounter = 0;
             tvTimer.setText("");
             player.stop();
             player.release();
-            initializeMediaPlayer("http://s4.voscast.com:8432/");
+            initializeMediaPlayer(stationLink);
         }
 
         buttonPlay.setEnabled(true);
         buttonStopPlay.setEnabled(false);
+    }
+
+    private void stopRecording() {
+        if (recorderNew.isRecording()) {
+            recorderNew.stop();
+            counter = 0;
+            minCounter = 0;
+            timer.cancel();
+            tvTimer.setText("");
+            recorderNew = new Recorder("df");
+        }
     }
 
     private void initializeMediaPlayer(String channelLink) {
@@ -390,9 +411,13 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
     @Override
     protected void onPause() {
         super.onPause();
-        if (player.isPlaying()) {
-            player.stop();
-        }
+        isPlaying = false;
+        btnStart.setEnabled(true);
+
+        stopRecording();
+        stopPlaying();
+
+
     }
 
 
@@ -415,13 +440,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         } else if (v == buttonStopPlay) {
             isPlaying = false;
             btnStart.setEnabled(true);
-
-            if (recorderNew.isRecording()) {
-                recorderNew.stop();
-                counter = 0;
-                timer.cancel();
-                tvTimer.setText("");
-            }
+            stopRecording();
             stopPlaying();
         } else if (v == btnStart) {
             if (isPlaying) {
@@ -431,12 +450,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
 
         } else if (v == btnStop) {
             btnStart.setEnabled(true);
-            if (recorderNew.isRecording()) {
-                recorderNew.stop();
-                counter = 0;
-                timer.cancel();
-                tvTimer.setText("");
-            }
+            stopRecording();
         }
 
     }
