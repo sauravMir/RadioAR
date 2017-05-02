@@ -10,7 +10,7 @@
         android:background="#ffffffff"
         tools:context=".MainActivity">
 
-        <LinearLayout
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@drawable/music_bg"
@@ -21,7 +21,8 @@
                 android:id="@+id/tvRadioStation"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dip"
+                android:layout_alignParentTop="true"
+                android:layout_marginTop="30dip"
                 android:gravity="center"
                 android:text=""
                 android:textColor="@color/white"
@@ -32,66 +33,82 @@
                 android:id="@+id/tvTimer"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dip"
+                android:layout_centerInParent="true"
                 android:gravity="center"
                 android:text=""
                 android:textColor="@color/white"
-                android:textSize="@dimen/twenty_five" />
+                android:textSize="@dimen/thirty" />
 
 
             <LinearLayout
                 android:id="@+id/linearLayout1"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/hundred"
-                android:gravity="bottom"
-                android:orientation="vertical"
+                android:layout_alignParentBottom="true"
+                android:layout_marginBottom="@dimen/twenty"
+                android:orientation="horizontal"
                 android:weightSum="1">
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/zero"
+                <RelativeLayout
+                    android:layout_width="@dimen/zero"
+                    android:layout_height="match_parent"
                     android:layout_weight=".5"
                     android:gravity="center"
                     android:orientation="horizontal">
 
-                    <Button
-                        android:id="@+id/buttonPlay"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Play"></Button>
 
-                    <Button
+                    <ImageButton
                         android:id="@+id/buttonStopPlay"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Stop"></Button>
-                </LinearLayout>
+                        android:layout_width="@dimen/ninty"
+                        android:layout_height="@dimen/ninty"
+                        android:layout_centerInParent="true"
+                        android:background="@color/transparent"
+                        android:scaleType="fitCenter"
+                        android:src="@drawable/ic_pause" />
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/zero"
+                    <ImageButton
+                        android:id="@+id/buttonPlay"
+                        android:layout_width="@dimen/ninty"
+                        android:layout_height="@dimen/ninty"
+                        android:layout_centerInParent="true"
+                        android:background="@color/transparent"
+                        android:scaleType="fitCenter"
+                        android:src="@drawable/ic_play" />
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_width="@dimen/zero"
+                    android:layout_height="match_parent"
                     android:layout_weight=".5"
                     android:gravity="center">
 
-                    <Button
-                        android:id="@+id/btnStart"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Start Record"></Button>
 
-
-                    <Button
+                    <ImageButton
                         android:id="@+id/btnStop"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Stop Record"></Button>
+                        android:layout_width="@dimen/ninty"
+                        android:layout_height="@dimen/ninty"
+                        android:layout_centerInParent="true"
+                        android:background="@color/transparent"
+                        android:scaleType="fitCenter"
+                        android:src="@drawable/ic_stop_record" />
 
-                </LinearLayout>
+
+                    <ImageButton
+                        android:id="@+id/btnStart"
+                        android:layout_width="@dimen/ninty"
+                        android:layout_height="@dimen/ninty"
+                        android:layout_centerInParent="true"
+                        android:background="@color/transparent"
+                        android:scaleType="fitCenter"
+                        android:src="@drawable/ic_record" />
+
+
+                </RelativeLayout>
 
 
             </LinearLayout>
 
-        </LinearLayout>
+        </RelativeLayout>
 
 
     </RelativeLayout>
@@ -104,13 +121,5 @@
         android:layout_gravity="left|start"
         android:background="#ffeeeeee" />
 
-
-    <!--<ExpandableListView
-        android:id="@+id/simpleExpandableListView"
-        android:layout_width="match_parent"
-        android:layout_height="fill_parent"
-        android:divider="#f00"
-        android:childDivider="#0f0"
-        android:dividerHeight="1dp" />-->
 
 </android.support.v4.widget.DrawerLayout>

@@ -21,6 +21,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ExpandableListView;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -53,8 +54,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
     private Thread recordingThread = null;
     private boolean isRecording = false;
 
-    private Button buttonPlay, btnStart, btnStop;
-    private Button buttonStopPlay;
+    private ImageButton buttonPlay,buttonStopPlay, btnStart, btnStop;
     private MediaPlayer player;
     Recorder recorderNew;
     String fileName;
@@ -289,26 +289,27 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         tvTimer = (TextView) findViewById(R.id.tvTimer);
 
 
-        btnStart = (Button) findViewById(R.id.btnStart);
+        btnStart = (ImageButton) findViewById(R.id.btnStart);
         btnStart.setOnClickListener(this);
 
-        btnStop = (Button) findViewById(R.id.btnStop);
+        btnStop = (ImageButton) findViewById(R.id.btnStop);
         btnStop.setOnClickListener(this);
 
-        buttonPlay = (Button) findViewById(R.id.buttonPlay);
+        buttonPlay = (ImageButton) findViewById(R.id.buttonPlay);
         buttonPlay.setOnClickListener(this);
 
 
-        buttonStopPlay = (Button) findViewById(R.id.buttonStopPlay);
-        buttonStopPlay.setEnabled(false);
+        buttonStopPlay = (ImageButton) findViewById(R.id.buttonStopPlay);
+        buttonStopPlay.setVisibility(View.GONE);
         buttonStopPlay.setOnClickListener(this);
 
     }
 
 
+
     private void startPlaying() {
-        buttonStopPlay.setEnabled(true);
-        buttonPlay.setEnabled(false);
+        buttonStopPlay.setVisibility(View.VISIBLE);
+        buttonPlay.setVisibility(View.GONE);
         player.prepareAsync();
         player.setOnPreparedListener(new OnPreparedListener() {
 
@@ -367,8 +368,8 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
             initializeMediaPlayer(stationLink);
         }
 
-        buttonPlay.setEnabled(true);
-        buttonStopPlay.setEnabled(false);
+        buttonPlay.setVisibility(View.VISIBLE);
+        buttonStopPlay.setVisibility(View.GONE);
     }
 
     private void stopRecording() {
@@ -412,7 +413,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
     protected void onPause() {
         super.onPause();
         isPlaying = false;
-        btnStart.setEnabled(true);
+        btnStart.setVisibility(View.VISIBLE);
 
         stopRecording();
         stopPlaying();
@@ -439,7 +440,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
             startPlaying();
         } else if (v == buttonStopPlay) {
             isPlaying = false;
-            btnStart.setEnabled(true);
+            btnStart.setVisibility(View.VISIBLE);
             stopRecording();
             stopPlaying();
         } else if (v == btnStart) {
@@ -449,7 +450,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
                 Toast.makeText(activity, "please Play Radio first.", Toast.LENGTH_LONG).show();
 
         } else if (v == btnStop) {
-            btnStart.setEnabled(true);
+            btnStart.setVisibility(View.VISIBLE);
             stopRecording();
         }
 
@@ -461,7 +462,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         dialog.setContentView(R.layout.dialog_share_file_name);
         dialog.setCancelable(false);
 
-        final TextView etFileName = (EditText) dialog.findViewById(R.id.etFileName);
+        final EditText etFileName = (EditText) dialog.findViewById(R.id.etFileName);
 
         Button btNo = (Button) dialog.findViewById(R.id.btNo);
         Button btnOk = (Button) dialog.findViewById(R.id.btnOk);
@@ -477,17 +478,23 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
 
             @Override
             public void onClick(View v) {
-                fileName = etFileName.getText().toString();
-                try {
-                    if (recorderNew != null) {
-                        startCounter();
-                        btnStart.setEnabled(false);
-                        recorderNew.start(fileName);
+                fileName = etFileName.getText().toString().trim();
+                if(fileName !=null && !TextUtils.isEmpty(fileName)){
+                    try {
+                        if (recorderNew != null) {
+                            startCounter();
+                            btnStart.setVisibility(View.GONE);
+                            recorderNew.start(fileName);
+                        }
+                    } catch (IOException e) {
+                        e.printStackTrace();
                     }
-                } catch (IOException e) {
-                    e.printStackTrace();
+                    dialog.dismiss();
+                }else {
+                    Toast.makeText(activity, "Please add file name first!", Toast.LENGTH_SHORT).show();
                 }
-                dialog.dismiss();
+
+
             }
 
         });
