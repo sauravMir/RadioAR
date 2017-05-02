@@ -114,14 +114,14 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                 //get the group header
                 RadioCategory headerInfo = rdCategoryLst.get(groupPosition);
                 //get the child info
-//                parent.getChildAt(groupPosition);
+
                 if (previousSelectedItem != null) {
                     previousSelectedItem.setBackgroundColor(Color.parseColor("#ffeeeeee"));
                 }
                 previousSelectedItem = v;
-                v.setBackgroundColor(Color.GRAY);
+                v.setBackgroundColor(getResources().getColor(R.color.editor_background));
+                
                 RadioStation detailInfo = headerInfo.getProductList().get(childPosition);
-
                 stationName = detailInfo.getName();
                 stationLink = detailInfo.getLink();
                 tvRadioStation.setText(stationName);
