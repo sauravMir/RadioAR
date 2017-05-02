@@ -1,6 +1,6 @@
 package com.radioar;
 
-public class ChildInfo {
+public class RadioStation {
 
     private String name = "";
     private String link = "";

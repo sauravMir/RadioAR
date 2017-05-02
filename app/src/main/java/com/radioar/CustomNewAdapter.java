@@ -16,16 +16,16 @@ import java.util.ArrayList;
 public class CustomNewAdapter extends BaseExpandableListAdapter {
 
     private Context context;
-    private ArrayList<GroupInfo> deptList;
+    private ArrayList<RadioCategory> deptList;
 
-    public CustomNewAdapter(Context context, ArrayList<GroupInfo> deptList) {
+    public CustomNewAdapter(Context context, ArrayList<RadioCategory> deptList) {
         this.context = context;
         this.deptList = deptList;
     }
 
     @Override
     public Object getChild(int groupPosition, int childPosition) {
-        ArrayList<ChildInfo> productList = deptList.get(groupPosition).getProductList();
+        ArrayList<RadioStation> productList = deptList.get(groupPosition).getProductList();
         return productList.get(childPosition);
     }
 
@@ -38,7 +38,7 @@ public class CustomNewAdapter extends BaseExpandableListAdapter {
     public View getChildView(int groupPosition, int childPosition, boolean isLastChild,
                              View view, ViewGroup parent) {
 
-        ChildInfo detailInfo = (ChildInfo) getChild(groupPosition, childPosition);
+        RadioStation detailInfo = (RadioStation) getChild(groupPosition, childPosition);
         if (view == null) {
             LayoutInflater infalInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             view = infalInflater.inflate(R.layout.child_items, null);
@@ -55,7 +55,7 @@ public class CustomNewAdapter extends BaseExpandableListAdapter {
     @Override
     public int getChildrenCount(int groupPosition) {
 
-        ArrayList<ChildInfo> productList = deptList.get(groupPosition).getProductList();
+        ArrayList<RadioStation> productList = deptList.get(groupPosition).getProductList();
         return productList.size();
 
     }
@@ -79,7 +79,7 @@ public class CustomNewAdapter extends BaseExpandableListAdapter {
     public View getGroupView(int groupPosition, boolean isLastChild, View view,
                              ViewGroup parent) {
 
-        GroupInfo headerInfo = (GroupInfo) getGroup(groupPosition);
+        RadioCategory headerInfo = (RadioCategory) getGroup(groupPosition);
         if (view == null) {
             LayoutInflater inf = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             view = inf.inflate(R.layout.group_items, null);

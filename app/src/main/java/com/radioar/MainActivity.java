@@ -25,7 +25,6 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.educareapps.mylibrary.Animanation;
 import com.educareapps.mylibrary.DialogNavBarHide;
 
 import java.io.IOException;
@@ -41,8 +40,8 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
     private ArrayAdapter<String> mAdapter;
     private ActionBarDrawerToggle mDrawerToggle;
     private String mActivityTitle;
-    private LinkedHashMap<String, GroupInfo> subjects = new LinkedHashMap<String, GroupInfo>();
-    private ArrayList<GroupInfo> deptList = new ArrayList<GroupInfo>();
+    private LinkedHashMap<String, RadioCategory> subjects = new LinkedHashMap<String, RadioCategory>();
+    private ArrayList<RadioCategory> rdCategoryLst = new ArrayList<RadioCategory>();
     private CustomNewAdapter listAdapter;
     MainActivity activity;
 
@@ -54,7 +53,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
     private Thread recordingThread = null;
     private boolean isRecording = false;
 
-    private ImageButton buttonPlay,buttonStopPlay, btnStart, btnStop;
+    private ImageButton ibtnPlay, ibtnStop, ibtnStartRecord, ibtnStopRecord;
     private MediaPlayer player;
     Recorder recorderNew;
     String fileName;
@@ -83,9 +82,9 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         initializeUIElements();
         int bufferSize = AudioRecord.getMinBufferSize(RECORDER_SAMPLERATE, RECORDER_CHANNELS, RECORDER_AUDIO_ENCODING);
         System.out.println("BUFFER SIZE VALUE IS " + bufferSize);
-        ChildInfo childInfo = (ChildInfo) listAdapter.getChild(0, 0);
-        stationName = childInfo.getName();
-        stationLink = childInfo.getLink();
+        RadioStation radioStation = (RadioStation) listAdapter.getChild(0, 0);
+        stationName = radioStation.getName();
+        stationLink = radioStation.getLink();
         initializeMediaPlayer(stationLink);
         tvRadioStation.setText(stationName);
 
@@ -98,7 +97,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         //get reference of the ExpandableListView
         simpleExpandableListView = (ExpandableListView) findViewById(R.id.simpleExpandableListView);
         // create the adapter by passing your ArrayList data
-        listAdapter = new CustomNewAdapter(MainActivity.this, deptList);
+        listAdapter = new CustomNewAdapter(MainActivity.this, rdCategoryLst);
         // attach the adapter to the expandable list view
         simpleExpandableListView.setAdapter(listAdapter);
 
@@ -110,9 +109,9 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
             @Override
             public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id) {
                 //get the group header
-                GroupInfo headerInfo = deptList.get(groupPosition);
+                RadioCategory headerInfo = rdCategoryLst.get(groupPosition);
                 //get the child info
-                ChildInfo detailInfo = headerInfo.getProductList().get(childPosition);
+                RadioStation detailInfo = headerInfo.getProductList().get(childPosition);
                 stationName = detailInfo.getName();
                 stationLink = detailInfo.getLink();
                 tvRadioStation.setText(stationName);
@@ -140,7 +139,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
             @Override
             public boolean onGroupClick(ExpandableListView parent, View v, int groupPosition, long id) {
                 //get the group header
-                GroupInfo headerInfo = deptList.get(groupPosition);
+                RadioCategory headerInfo = rdCategoryLst.get(groupPosition);
 
                 return false;
             }
@@ -231,54 +230,54 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
     //load some initial data into out list
     private void loadData() {
 
-        addProduct(getString(R.string.international_radio), "Accu Radio", "http://s4.voscast.com:8432");
-        addProduct(getString(R.string.international_radio), "BBC Local Radio", "https://en.wikipedia.org/wiki/List_of_Internet_radio_stations");
-        addProduct(getString(R.string.international_radio), "Shoutcast ", "http://s4.voscast.com:8432");
-        addProduct(getString(R.string.international_radio), "bcb", "http://173.208.157.101:8020 ");
+        addRadioStation(getString(R.string.international_radio), "Accu Radio", "http://s4.voscast.com:8432");
+        addRadioStation(getString(R.string.international_radio), "BBC Local Radio", "https://en.wikipedia.org/wiki/List_of_Internet_radio_stations");
+        addRadioStation(getString(R.string.international_radio), "Shoutcast ", "http://s4.voscast.com:8432");
+        addRadioStation(getString(R.string.international_radio), "bcb", "http://173.208.157.101:8020 ");
 
-        addProduct(getString(R.string.local_radio), "Radio Plus", "http://s4.voscast.com:8432");
-        addProduct(getString(R.string.local_radio), "Radio One", "http://173.208.157.101:8020 ");
-        addProduct(getString(R.string.local_radio), "Top Fm", "http://webcast.orange.mu:1935");
-        addProduct(getString(R.string.local_radio), "MBC radio", "http://www.mbcradio.tv/sites/all/themes/mbcradiotv/templates/radio-mauritius.html");
+        addRadioStation(getString(R.string.local_radio), "Radio Plus", "http://s4.voscast.com:8432");
+        addRadioStation(getString(R.string.local_radio), "Radio One", "http://173.208.157.101:8020 ");
+        addRadioStation(getString(R.string.local_radio), "Top Fm", "http://webcast.orange.mu:1935");
+        addRadioStation(getString(R.string.local_radio), "MBC radio", "http://www.mbcradio.tv/sites/all/themes/mbcradiotv/templates/radio-mauritius.html");
 
-        addProduct(getString(R.string.local_radio), "Taal FM ", "http://www.mbcradio.tv/sites/all/themes/mbcradiotv/templates/taalfm.html");
-        addProduct(getString(R.string.local_radio), "Kool Fm", "http://www.mbcradio.tv/sites/all/themes/mbcradiotv/templates/koolfm.html");
-        addProduct(getString(R.string.local_radio), "Music FM", "http://www.mbcradio.tv/sites/all/themes/mbcradiotv/templates/musicfm.html");
-        addProduct(getString(R.string.local_radio), "Best fm ", "http://www.mbcradio.tv/sites/all/themes/mbcradiotv/templates/bestfm.html");
+        addRadioStation(getString(R.string.local_radio), "Taal FM ", "http://www.mbcradio.tv/sites/all/themes/mbcradiotv/templates/taalfm.html");
+        addRadioStation(getString(R.string.local_radio), "Kool Fm", "http://www.mbcradio.tv/sites/all/themes/mbcradiotv/templates/koolfm.html");
+        addRadioStation(getString(R.string.local_radio), "Music FM", "http://www.mbcradio.tv/sites/all/themes/mbcradiotv/templates/musicfm.html");
+        addRadioStation(getString(R.string.local_radio), "Best fm ", "http://www.mbcradio.tv/sites/all/themes/mbcradiotv/templates/bestfm.html");
     }
 
 
     //here we maintain our products in various departments
-    private int addProduct(String department, String title, String link) {
+    private int addRadioStation(String rdCategory, String title, String link) {
 
         int groupPosition = 0;
 
         //check the hash map if the group already exists
-        GroupInfo headerInfo = subjects.get(department);
+        RadioCategory headerInfo = subjects.get(rdCategory);
         //add the group if doesn't exists
         if (headerInfo == null) {
-            headerInfo = new GroupInfo();
-            headerInfo.setName(department);
-            subjects.put(department, headerInfo);
-            deptList.add(headerInfo);
+            headerInfo = new RadioCategory();
+            headerInfo.setName(rdCategory);
+            subjects.put(rdCategory, headerInfo);
+            rdCategoryLst.add(headerInfo);
         }
 
         //get the children for the group
-        ArrayList<ChildInfo> productList = headerInfo.getProductList();
+        ArrayList<RadioStation> productList = headerInfo.getProductList();
       /*  //size of the children list
         int listSize = productList.size();
         //add to the counter
         listSize++;*/
 
         //create a new child and add that to the group
-        ChildInfo detailInfo = new ChildInfo();
-        detailInfo.setLink(link);
-        detailInfo.setName(title);
-        productList.add(detailInfo);
+        RadioStation aRadio = new RadioStation();
+        aRadio.setLink(link);
+        aRadio.setName(title);
+        productList.add(aRadio);
         headerInfo.setProductList(productList);
 
         //find the group position inside the list
-        groupPosition = deptList.indexOf(headerInfo);
+        groupPosition = rdCategoryLst.indexOf(headerInfo);
         return groupPosition;
     }
 
@@ -289,27 +288,25 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         tvTimer = (TextView) findViewById(R.id.tvTimer);
 
 
-        btnStart = (ImageButton) findViewById(R.id.btnStart);
-        btnStart.setOnClickListener(this);
+        ibtnStartRecord = (ImageButton) findViewById(R.id.ibtnStartRecord);
+        ibtnStartRecord.setOnClickListener(this);
 
-        btnStop = (ImageButton) findViewById(R.id.btnStop);
-        btnStop.setOnClickListener(this);
+        ibtnStopRecord = (ImageButton) findViewById(R.id.ibtnStopRecord);
+        ibtnStopRecord.setOnClickListener(this);
 
-        buttonPlay = (ImageButton) findViewById(R.id.buttonPlay);
-        buttonPlay.setOnClickListener(this);
+        ibtnPlay = (ImageButton) findViewById(R.id.ibtnPlay);
+        ibtnPlay.setOnClickListener(this);
 
 
-        buttonStopPlay = (ImageButton) findViewById(R.id.buttonStopPlay);
-        buttonStopPlay.setVisibility(View.GONE);
-        buttonStopPlay.setOnClickListener(this);
+        ibtnStop = (ImageButton) findViewById(R.id.ibtnStop);
+        ibtnStop.setOnClickListener(this);
 
     }
 
 
-
     private void startPlaying() {
-        buttonStopPlay.setVisibility(View.VISIBLE);
-        buttonPlay.setVisibility(View.GONE);
+        ibtnStop.setVisibility(View.VISIBLE);
+        ibtnPlay.setVisibility(View.GONE);
         player.prepareAsync();
         player.setOnPreparedListener(new OnPreparedListener() {
 
@@ -368,8 +365,8 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
             initializeMediaPlayer(stationLink);
         }
 
-        buttonPlay.setVisibility(View.VISIBLE);
-        buttonStopPlay.setVisibility(View.GONE);
+        ibtnPlay.setVisibility(View.VISIBLE);
+        ibtnStop.setVisibility(View.GONE);
     }
 
     private void stopRecording() {
@@ -380,6 +377,10 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
             timer.cancel();
             tvTimer.setText("");
             recorderNew = new Recorder("df");
+            ibtnStartRecord.setVisibility(View.VISIBLE);
+            ibtnStopRecord.setVisibility(View.GONE);
+
+
         }
     }
 
@@ -413,7 +414,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
     protected void onPause() {
         super.onPause();
         isPlaying = false;
-        btnStart.setVisibility(View.VISIBLE);
+        ibtnStartRecord.setVisibility(View.VISIBLE);
 
         stopRecording();
         stopPlaying();
@@ -434,23 +435,21 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
 
 
     public void onClick(View v) {
-        Animanation.blink(v);
-        if (v == buttonPlay) {
+        //Animanation.blink(v);
+        if (v == ibtnPlay) {
             isPlaying = true;
             startPlaying();
-        } else if (v == buttonStopPlay) {
+        } else if (v == ibtnStop) {
             isPlaying = false;
-            btnStart.setVisibility(View.VISIBLE);
             stopRecording();
             stopPlaying();
-        } else if (v == btnStart) {
+        } else if (v == ibtnStartRecord) {
             if (isPlaying) {
                 dialogFileName();
             } else
                 Toast.makeText(activity, "please Play Radio first.", Toast.LENGTH_LONG).show();
 
-        } else if (v == btnStop) {
-            btnStart.setVisibility(View.VISIBLE);
+        } else if (v == ibtnStopRecord) {
             stopRecording();
         }
 
@@ -479,18 +478,19 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
             @Override
             public void onClick(View v) {
                 fileName = etFileName.getText().toString().trim();
-                if(fileName !=null && !TextUtils.isEmpty(fileName)){
+                if (fileName != null && !TextUtils.isEmpty(fileName)) {
                     try {
                         if (recorderNew != null) {
                             startCounter();
-                            btnStart.setVisibility(View.GONE);
+                            ibtnStartRecord.setVisibility(View.GONE);
+                            ibtnStopRecord.setVisibility(View.VISIBLE);
                             recorderNew.start(fileName);
                         }
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
                     dialog.dismiss();
-                }else {
+                } else {
                     Toast.makeText(activity, "Please add file name first!", Toast.LENGTH_SHORT).show();
                 }
 

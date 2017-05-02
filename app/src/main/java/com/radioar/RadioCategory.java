@@ -2,10 +2,10 @@ package com.radioar;
 
 import java.util.ArrayList;
 
-public class GroupInfo {
+public class RadioCategory {
 
     private String name;
-    private ArrayList<ChildInfo> list = new ArrayList<ChildInfo>();
+    private ArrayList<RadioStation> list = new ArrayList<RadioStation>();
 
     public String getName() {
         return name;
@@ -15,11 +15,11 @@ public class GroupInfo {
         this.name = name;
     }
 
-    public ArrayList<ChildInfo> getProductList() {
+    public ArrayList<RadioStation> getProductList() {
         return list;
     }
 
-    public void setProductList(ArrayList<ChildInfo> productList) {
+    public void setProductList(ArrayList<RadioStation> productList) {
         this.list = productList;
     }
 
