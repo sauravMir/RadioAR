@@ -2,6 +2,7 @@ package com.radioar;
 
 import android.app.Dialog;
 import android.content.res.Configuration;
+import android.graphics.Color;
 import android.media.AudioFormat;
 import android.media.AudioRecord;
 import android.media.MediaPlayer;
@@ -9,7 +10,6 @@ import android.media.MediaPlayer.OnBufferingUpdateListener;
 import android.media.MediaPlayer.OnPreparedListener;
 import android.os.Bundle;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.text.TextUtils;
 import android.util.Log;
@@ -91,6 +91,8 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
 
     }
 
+    View previousSelectedItem;
+
     private void addDrawerItems() {
 
         loadData();
@@ -112,7 +114,14 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                 //get the group header
                 RadioCategory headerInfo = rdCategoryLst.get(groupPosition);
                 //get the child info
+//                parent.getChildAt(groupPosition);
+                if (previousSelectedItem != null) {
+                    previousSelectedItem.setBackgroundColor(Color.parseColor("#ffeeeeee"));
+                }
+                previousSelectedItem = v;
+                v.setBackgroundColor(Color.GRAY);
                 RadioStation detailInfo = headerInfo.getProductList().get(childPosition);
+
                 stationName = detailInfo.getName();
                 stationLink = detailInfo.getLink();
                 tvRadioStation.setText(stationName);
