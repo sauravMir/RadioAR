@@ -27,7 +27,6 @@ import android.widget.Toast;
 
 import com.educareapps.mylibrary.BaseActivity;
 import com.educareapps.mylibrary.DialogNavBarHide;
-import com.educareapps.mylibrary.MarshMallowPermission;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -46,7 +45,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     private ArrayList<RadioCategory> rdCategoryLst = new ArrayList<RadioCategory>();
     private RadioAdapter listAdapter;
     MainActivity activity;
-    MarshMallowPermission marshMallowPermission;
 
     private static final int RECORDER_SAMPLERATE = 8000;
     private static final int RECORDER_CHANNELS = AudioFormat.CHANNEL_IN_MONO;
@@ -77,10 +75,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
 
-        marshMallowPermission = new MarshMallowPermission(activity);
-        if (!marshMallowPermission.checkPermissionForExternalStorage()) {
-            marshMallowPermission.requestPermissionForExternalStorage();
-        }
+
 
         tvRadioStation = (TextView) findViewById(R.id.tvRadioStation);
 
@@ -124,7 +119,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                     previousSelectedItem.setBackgroundColor(Color.parseColor("#ffeeeeee"));
                 }
                 previousSelectedItem = v;
-                v.setBackgroundColor(getResources().getColor(R.color.editor_background));
+                v.setBackgroundColor(getResources().getColor(R.color.appColor));
 
                 RadioStation detailInfo = headerInfo.getRadioStationList().get(childPosition);
                 stationName = detailInfo.getName();
@@ -248,7 +243,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         addRadioStation(getString(R.string.international_radio), "Accu Radio", "http://s4.voscast.com:8432");
         addRadioStation(getString(R.string.international_radio), "BBC Local Radio", "https://en.wikipedia.org/wiki/List_of_Internet_radio_stations");
         addRadioStation(getString(R.string.international_radio), "Shoutcast ", "http://s4.voscast.com:8432");
-        addRadioStation(getString(R.string.international_radio), "bcb", "http://173.208.157.101:8020 ");
+        addRadioStation(getString(R.string.international_radio), "BCB", "http://173.208.157.101:8020 ");
 
         addRadioStation(getString(R.string.local_radio), "Radio Plus", "http://s4.voscast.com:8432");
         addRadioStation(getString(R.string.local_radio), "Radio One", "http://173.208.157.101:8020 ");
@@ -462,9 +457,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
             if (isPlaying) {
                 dialogFileName();
 
-                if (!marshMallowPermission.checkPermissionForRecord()) {
-                    marshMallowPermission.requestPermissionForRecord();
-                }
             } else
                 Toast.makeText(activity, "please Play Radio first.", Toast.LENGTH_LONG).show();
 

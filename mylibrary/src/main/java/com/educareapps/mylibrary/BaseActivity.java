@@ -19,9 +19,12 @@ public class BaseActivity extends ActionBarActivity {
         //UiChangeListener();
 
         //Custom Error log handeled by Mail
-     if (!ApplicationMode.devMode) {
+        if (!ApplicationMode.devMode) {
             Thread.setDefaultUncaughtExceptionHandler(new ExceptionHandler(this));
         }
+
+
+
     }
 
     // for centrally handled String type by Rokan

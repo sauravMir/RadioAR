@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <color name="appColor">#00978A</color>
     <color name="colorPrimary">#00978A</color>
     <color name="colorPrimaryDark">#00978A</color>
     <color name="colorAccent">#4051B7</color>
-    <color name="editor_background">#00978A</color>
     <color name="yellow">#FFEB3D</color>
     <color name="orangeLight">#FFC108</color>
     <color name="orangeDark">#FF9801</color>
