@@ -1,7 +1,6 @@
 package com.radioar;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,19 +13,19 @@ import java.util.ArrayList;
 /**
  * Created by Gourav on 08-03-2016.
  */
-public class CustomNewAdapter extends BaseExpandableListAdapter {
+public class RadioAdapter extends BaseExpandableListAdapter {
 
     private Context context;
     private ArrayList<RadioCategory> deptList;
 
-    public CustomNewAdapter(Context context, ArrayList<RadioCategory> deptList) {
+    public RadioAdapter(Context context, ArrayList<RadioCategory> deptList) {
         this.context = context;
         this.deptList = deptList;
     }
 
     @Override
     public Object getChild(int groupPosition, int childPosition) {
-        ArrayList<RadioStation> productList = deptList.get(groupPosition).getProductList();
+        ArrayList<RadioStation> productList = deptList.get(groupPosition).getRadioStationList();
         return productList.get(childPosition);
     }
 
@@ -56,7 +55,7 @@ public class CustomNewAdapter extends BaseExpandableListAdapter {
     @Override
     public int getChildrenCount(int groupPosition) {
 
-        ArrayList<RadioStation> productList = deptList.get(groupPosition).getProductList();
+        ArrayList<RadioStation> productList = deptList.get(groupPosition).getRadioStationList();
         return productList.size();
 
     }

@@ -15,12 +15,12 @@ public class RadioCategory {
         this.name = name;
     }
 
-    public ArrayList<RadioStation> getProductList() {
+    public ArrayList<RadioStation> getRadioStationList() {
         return list;
     }
 
-    public void setProductList(ArrayList<RadioStation> productList) {
-        this.list = productList;
+    public void setRadioStationList(ArrayList<RadioStation> radioList) {
+        this.list = radioList;
     }
 
 }

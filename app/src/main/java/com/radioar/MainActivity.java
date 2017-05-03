@@ -27,6 +27,7 @@ import android.widget.Toast;
 
 import com.educareapps.mylibrary.BaseActivity;
 import com.educareapps.mylibrary.DialogNavBarHide;
+import com.educareapps.mylibrary.MarshMallowPermission;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -43,9 +44,9 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     private String mActivityTitle;
     private LinkedHashMap<String, RadioCategory> subjects = new LinkedHashMap<String, RadioCategory>();
     private ArrayList<RadioCategory> rdCategoryLst = new ArrayList<RadioCategory>();
-    private CustomNewAdapter listAdapter;
+    private RadioAdapter listAdapter;
     MainActivity activity;
-
+    MarshMallowPermission marshMallowPermission;
 
     private static final int RECORDER_SAMPLERATE = 8000;
     private static final int RECORDER_CHANNELS = AudioFormat.CHANNEL_IN_MONO;
@@ -76,6 +77,10 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
 
+        marshMallowPermission = new MarshMallowPermission(activity);
+        if (!marshMallowPermission.checkPermissionForExternalStorage()) {
+            marshMallowPermission.requestPermissionForExternalStorage();
+        }
 
         tvRadioStation = (TextView) findViewById(R.id.tvRadioStation);
 
@@ -100,7 +105,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         //get reference of the ExpandableListView
         simpleExpandableListView = (ExpandableListView) findViewById(R.id.simpleExpandableListView);
         // create the adapter by passing your ArrayList data
-        listAdapter = new CustomNewAdapter(MainActivity.this, rdCategoryLst);
+        listAdapter = new RadioAdapter(MainActivity.this, rdCategoryLst);
         // attach the adapter to the expandable list view
         simpleExpandableListView.setAdapter(listAdapter);
 
@@ -120,8 +125,8 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                 }
                 previousSelectedItem = v;
                 v.setBackgroundColor(getResources().getColor(R.color.editor_background));
-                
-                RadioStation detailInfo = headerInfo.getProductList().get(childPosition);
+
+                RadioStation detailInfo = headerInfo.getRadioStationList().get(childPosition);
                 stationName = detailInfo.getName();
                 stationLink = detailInfo.getLink();
                 tvRadioStation.setText(stationName);
@@ -273,7 +278,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         }
 
         //get the children for the group
-        ArrayList<RadioStation> productList = headerInfo.getProductList();
+        ArrayList<RadioStation> productList = headerInfo.getRadioStationList();
       /*  //size of the children list
         int listSize = productList.size();
         //add to the counter
@@ -284,7 +289,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         aRadio.setLink(link);
         aRadio.setName(title);
         productList.add(aRadio);
-        headerInfo.setProductList(productList);
+        headerInfo.setRadioStationList(productList);
 
         //find the group position inside the list
         groupPosition = rdCategoryLst.indexOf(headerInfo);
@@ -456,6 +461,10 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         } else if (v == ibtnStartRecord) {
             if (isPlaying) {
                 dialogFileName();
+
+                if (!marshMallowPermission.checkPermissionForRecord()) {
+                    marshMallowPermission.requestPermissionForRecord();
+                }
             } else
                 Toast.makeText(activity, "please Play Radio first.", Toast.LENGTH_LONG).show();
 
